@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
+import Subscription from './pages/Subscription'; // Import the Subscription component
 import Header from './components/Header';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/subscription" element={<Subscription />} /> {/* Add this route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

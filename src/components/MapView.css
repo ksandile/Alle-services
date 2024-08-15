@@ -1,0 +1,13 @@
+/* src/components/MapView.css */
+.map-container {
+    margin: 50px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map-container .leaflet-container {
+    height: 500px;
+    width: 100%;
+  }
+  

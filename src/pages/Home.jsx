@@ -1,21 +1,14 @@
 import React from 'react';
-import CarWash from '../components/CarWash';
-import Laundry from '../components/Laundry';
-import GardenMaintenance from '../components/GardenMaintenance';
-import HouseCleaning from '../components/HouseCleaning';
-import Subscription from '../components/Subscription';
-import MapView from '../components/MapView';
+import Services from '../components/Services';
+import MapView from '../components/MapView'; // Import MapView
+import './Home.css'; // Import the CSS file
 
 function Home() {
   return (
-    <div>
+    <div className="home-container">
       <h1>Welcome to Alle Services</h1>
-      <MapView />
-      <CarWash />
-      <Laundry />
-      <GardenMaintenance />
-      <HouseCleaning />
-      <Subscription />
+      <MapView />  {/* Render the map */}
+      <Services />
     </div>
   );
 }
