@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './MapView.css';
-
-// Import FontAwesome CSS
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function MapView() {
-  const defaultPosition = [51.505, -0.09];
   const [position, setPosition] = useState(null); // Start with null to handle loading state
   const zoom = 13;
 
   useEffect(() => {
+    const defaultPosition = [51.505, -0.09]; // Move defaultPosition inside useEffect
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -27,7 +25,7 @@ function MapView() {
     } else {
       setPosition(defaultPosition); // If geolocation is not supported, use default position
     }
-  }, []);
+  }, []); // Empty dependency array
 
   if (!position) {
     return <div>Loading map...</div>; // Loading state

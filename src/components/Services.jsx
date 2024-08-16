@@ -8,7 +8,7 @@ import './Services.css';
 function Services() {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const [recentAddresses, setRecentAddresses] = useState([
+  const [recentAddresses,] = useState([
     '123 Main St',
     '456 Elm St',
     '789 Maple Ave',
