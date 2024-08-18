@@ -1,19 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Fuse from 'fuse.js';
+import './Services.css';
+
+// Import your service components
 import CarWash from './CarWash';
 import HouseCleaning from './HouseCleaning';
 import GardenMaintenance from './GardenMaintenance';
 import Laundry from './Laundry';
-import './Services.css';
+
+// Replace with your Google Maps API Key
+const GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY';
 
 function Services() {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const [recentAddresses] = useState([
-    '123 Main St',
-    '456 Elm St',
-    '789 Maple Ave',
-  ]);
+  const [addresses, setAddresses] = useState([]);
+  const [filteredAddresses, setFilteredAddresses] = useState([]);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
+
+  // Fetch addresses from Google Maps Places API
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        if (searchInput.length > 2) {
+          const response = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json`, {
+            params: {
+              query: searchInput,
+              key: GOOGLE_MAPS_API_KEY
+            }
+          });
+          const addressesList = response.data.results.map(result => result.formatted_address);
+          setAddresses(addressesList);
+        }
+      } catch (e) {
+        console.error('Error fetching addresses:', e);
+      }
+    };
+
+    fetchAddresses();
+  }, [searchInput]);
+
+  // Filter addresses based on search input using Fuse.js
+  useEffect(() => {
+    if (searchInput) {
+      const fuse = new Fuse(addresses, { includeScore: true, threshold: 0.3 });
+      const result = fuse.search(searchInput).map(({ item }) => item);
+      setFilteredAddresses(result);
+    } else {
+      setFilteredAddresses([]);
+    }
+  }, [searchInput, addresses]);
 
   const handleRequestClick = () => {
     setShowSearchBar(true);
@@ -32,10 +69,6 @@ function Services() {
   const handleRequestSubmit = () => {
     setRequestSubmitted(true);
   };
-
-  const filteredAddresses = recentAddresses.filter((address) =>
-    address.toLowerCase().includes(searchInput.toLowerCase())
-  );
 
   return (
     <div className="services-container">
@@ -66,7 +99,7 @@ function Services() {
                   </div>
                 ))
               ) : (
-                <div>No recent addresses found.</div>
+                <div>No matching addresses found.</div>
               )}
             </div>
             {!requestSubmitted ? (
