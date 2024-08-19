@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import 'leaflet.gridlayer.googlemutant';
 import './MapView.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function MapView() {
-  const [position, setPosition] = useState(null); // Start with null to handle loading state
+  const [position, setPosition] = useState(null);
   const zoom = 17;
 
   useEffect(() => {
-    const defaultPosition = [51.505, -0.09]; // Move defaultPosition inside useEffect
+    const defaultPosition = [51.505, -0.09];
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -19,35 +20,31 @@ function MapView() {
         },
         (err) => {
           console.error(err);
-          setPosition(defaultPosition); // If geolocation fails, use default position
+          setPosition(defaultPosition);
         }
       );
     } else {
-      setPosition(defaultPosition); // If geolocation is not supported, use default position
+      setPosition(defaultPosition);
     }
-  }, []); // Empty dependency array
+  }, []);
 
   if (!position) {
-    return <div>Loading map...</div>; // Loading state
+    return <div>Loading map...</div>;
   }
 
-  // Create a custom DivIcon with FontAwesome
   const locationIcon = new L.DivIcon({
     html: '<i class="fas fa-map-marker-alt" style="font-size: 24px; color: red;"></i>',
-    className: 'custom-icon', // Optional custom class for styling
+    className: 'custom-icon',
   });
 
   return (
     <div className="map-container">
       <MapContainer center={position} zoom={zoom}>
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url={`https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&key=AIzaSyDVyOceqNs7uP_HSTymlpPLWHl-pdpHqZM`}
         />
         <Marker position={position} icon={locationIcon}>
-          <Popup>
-            You are here.
-          </Popup>
+          <Popup>You are here.</Popup>
         </Marker>
       </MapContainer>
     </div>
