@@ -7,7 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function MapView() {
   const [position, setPosition] = useState(null); // Start with null to handle loading state
-  const zoom = 13;
+  const zoom = 17;
 
   useEffect(() => {
     const defaultPosition = [51.505, -0.09]; // Move defaultPosition inside useEffect

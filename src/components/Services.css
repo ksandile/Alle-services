@@ -105,3 +105,58 @@
   color: #333;
   text-align: center;
 }
+
+/* Media Query for Mobile Screens (768px or less) */
+@media (max-width: 768px) {
+  .services-row {
+    flex-direction: column;
+  }
+
+  .services-row > div {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .services-row img {
+    height: 250px;
+  }
+
+  .search-bar {
+    padding: 30px;
+  }
+
+  .search-bar input {
+    padding: 8px;
+  }
+
+  .recent-addresses {
+    max-height: 150px;
+  }
+
+  .request-btn {
+    padding: 8px;
+  }
+}
+
+/* Media Query for Smaller Mobile Screens (480px or less) */
+@media (max-width: 480px) {
+  .services-row img {
+    height: 200px;
+  }
+
+  .search-bar {
+    padding: 20px;
+  }
+
+  .search-bar input {
+    padding: 6px;
+  }
+
+  .request-btn {
+    padding: 6px;
+  }
+
+  .waiting-message {
+    font-size: 14px;
+  }
+}

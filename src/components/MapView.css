@@ -1,13 +1,36 @@
-/* src/components/MapView.css */
+/* Map Container */
 .map-container {
-    margin: 50px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 50px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Leaflet Container */
+.map-container .leaflet-container {
+  height: 300px;
+  width: 100%;
+}
+
+/* Media Query for Mobile Screens */
+@media (max-width: 768px) {
+  .map-container {
+      margin: 20px;
+      border-radius: 10px;
   }
-  
+
   .map-container .leaflet-container {
-    height: 300px;
-    width: 100%;
+      height: 250px;
   }
-  
+}
+
+@media (max-width: 480px) {
+  .map-container {
+      margin: 10px;
+      border-radius: 8px;
+  }
+
+  .map-container .leaflet-container {
+      height: 200px;
+  }
+}

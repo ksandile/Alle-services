@@ -60,3 +60,48 @@
     text-align: center;
   }
   
+  /* Media Query for Mobile Screens (768px or less) */
+@media (max-width: 768px) {
+  .sign-in-container {
+    padding: 15px;
+    max-width: 350px;
+  }
+
+  .sign-in-container h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .sign-in-container input {
+    padding: 8px;
+    margin: 8px 0;
+  }
+
+  .sign-in-container button {
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+/* Media Query for Smaller Mobile Screens (480px or less) */
+@media (max-width: 480px) {
+  .sign-in-container {
+    padding: 10px;
+    max-width: 300px;
+  }
+
+  .sign-in-container h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .sign-in-container input {
+    padding: 6px;
+    margin: 6px 0;
+  }
+
+  .sign-in-container button {
+    padding: 6px;
+    font-size: 12px;
+  }
+}
