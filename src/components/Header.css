@@ -16,7 +16,7 @@ nav {
 nav a {
   color: #fff;
   text-decoration: none;
-  margin: 0 15px;
+  margin: 0 15px 50px;
   font-size: 18px;
   transition: color 0.3s ease;
 }
@@ -54,10 +54,11 @@ nav a.active {
       top: 60px;
       left: 0;
       right: 0;
-      background-color: #007bff;
+      background-color: #4c4e50;
       text-align: center;
       padding: 20px 0;
-      z-index: 1;
+      height: 100%;
+      z-index: 9999;
   }
 
   .menu-icon {

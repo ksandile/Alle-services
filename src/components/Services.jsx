@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Fuse from 'fuse.js';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import './Services.css';
 
 // Import your service components
@@ -9,8 +11,32 @@ import HouseCleaning from './HouseCleaning';
 import GardenMaintenance from './GardenMaintenance';
 import Laundry from './Laundry';
 
-// Replace with your Google Maps API Key
-const GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY';
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyASb3wPvq4cksVCM3OzLE_s74gzpwdPC1E",
+  authDomain: "gggg-2164a.firebaseapp.com",
+  databaseURL: "https://gggg-2164a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "gggg-2164a",
+  storageBucket: "gggg-2164a.appspot.com",
+  messagingSenderId: "383686120816",
+  appId: "1:383686120816:web:70c4d29740d9cc95322bb5",
+  measurementId: "G-QL58FC4WP5"
+};
+
+const app = initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
+
+// Example function to send request data to Firestore
+const sendRequest = async (requestData) => {
+  try {
+    await addDoc(collection(firestore, 'requests'), {
+      ...requestData,
+      timestamp: serverTimestamp() // Ensure timestamp is added
+    });
+  } catch (error) {
+    console.error('Error sending request:', error);
+  }
+};
 
 function Services() {
   const [showSearchBar, setShowSearchBar] = useState(false);
@@ -18,6 +44,7 @@ function Services() {
   const [addresses, setAddresses] = useState([]);
   const [filteredAddresses, setFilteredAddresses] = useState([]);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
+  const [selectedServiceType, setSelectedServiceType] = useState('');
 
   // Fetch addresses from Google Maps Places API
   useEffect(() => {
@@ -27,7 +54,7 @@ function Services() {
           const response = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json`, {
             params: {
               query: searchInput,
-              key: GOOGLE_MAPS_API_KEY
+              key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
             }
           });
           const addressesList = response.data.results.map(result => result.formatted_address);
@@ -52,7 +79,8 @@ function Services() {
     }
   }, [searchInput, addresses]);
 
-  const handleRequestClick = () => {
+  const handleRequestClick = (serviceType) => {
+    setSelectedServiceType(serviceType);
     setShowSearchBar(true);
   };
 
@@ -66,19 +94,26 @@ function Services() {
     setRequestSubmitted(false); // Reset the request state when closing
   };
 
-  const handleRequestSubmit = () => {
+  const handleRequestSubmit = async () => {
+    const requestData = {
+      address: searchInput,
+      serviceType: selectedServiceType,
+      timestamp: serverTimestamp(),
+    };
+
+    await sendRequest(requestData);
     setRequestSubmitted(true);
   };
 
   return (
     <div className="services-container">
       <div className="services-row">
-        <CarWash onRequestClick={handleRequestClick} />
-        <HouseCleaning onRequestClick={handleRequestClick} />
+        <CarWash onRequestClick={() => handleRequestClick('Car Wash')} />
+        <HouseCleaning onRequestClick={() => handleRequestClick('House Cleaning')} />
       </div>
       <div className="services-row">
-        <GardenMaintenance onRequestClick={handleRequestClick} />
-        <Laundry onRequestClick={handleRequestClick} />
+        <GardenMaintenance onRequestClick={() => handleRequestClick('Garden Maintenance')} />
+        <Laundry onRequestClick={() => handleRequestClick('Laundry')} />
       </div>
 
       {showSearchBar && (
