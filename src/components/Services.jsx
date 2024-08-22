@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Fuse from 'fuse.js';
+import React, { useState, useEffect, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import './Services.css';
@@ -31,7 +29,7 @@ const sendRequest = async (requestData) => {
   try {
     await addDoc(collection(firestore, 'requests'), {
       ...requestData,
-      timestamp: serverTimestamp() // Ensure timestamp is added
+      timestamp: serverTimestamp()
     });
   } catch (error) {
     console.error('Error sending request:', error);
@@ -41,51 +39,32 @@ const sendRequest = async (requestData) => {
 function Services() {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const [addresses, setAddresses] = useState([]);
-  const [filteredAddresses, setFilteredAddresses] = useState([]);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState('');
+  const autocompleteRef = useRef(null);
 
-  // Fetch addresses from Google Maps Places API
   useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        if (searchInput.length > 2) {
-          const response = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json`, {
-            params: {
-              query: searchInput,
-              key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
-            }
-          });
-          const addressesList = response.data.results.map(result => result.formatted_address);
-          setAddresses(addressesList);
-        }
-      } catch (e) {
-        console.error('Error fetching addresses:', e);
-      }
-    };
-
-    fetchAddresses();
-  }, [searchInput]);
-
-  // Filter addresses based on search input using Fuse.js
-  useEffect(() => {
-    if (searchInput) {
-      const fuse = new Fuse(addresses, { includeScore: true, threshold: 0.3 });
-      const result = fuse.search(searchInput).map(({ item }) => item);
-      setFilteredAddresses(result);
-    } else {
-      setFilteredAddresses([]);
+    if (showSearchBar) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.onload = () => {
+        const autocomplete = new window.google.maps.places.Autocomplete(autocompleteRef.current, {
+          types: ['geocode'], // Restrict to address results
+          componentRestrictions: { country: 'us' } // Adjust to your country
+        });
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          setSearchInput(place.formatted_address);
+        });
+      };
+      document.head.appendChild(script);
     }
-  }, [searchInput, addresses]);
+  }, [showSearchBar]);
 
   const handleRequestClick = (serviceType) => {
     setSelectedServiceType(serviceType);
     setShowSearchBar(true);
-  };
-
-  const handleSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
   };
 
   const handleCloseSearchBar = () => {
@@ -121,22 +100,12 @@ function Services() {
           <div className="search-bar">
             <button className="close-btn" onClick={handleCloseSearchBar}>×</button>
             <input
+              ref={autocompleteRef}
               type="text"
               placeholder="Enter your address..."
               value={searchInput}
-              onChange={handleSearchInputChange}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
-            <div className="recent-addresses">
-              {filteredAddresses.length > 0 ? (
-                filteredAddresses.map((address, index) => (
-                  <div key={index} className="address-item">
-                    {address}
-                  </div>
-                ))
-              ) : (
-                <div>No matching addresses found.</div>
-              )}
-            </div>
             {!requestSubmitted ? (
               <button
                 className="request-btn"
